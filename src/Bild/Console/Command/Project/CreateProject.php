@@ -7,6 +7,7 @@
 namespace Bild\Console\Command\Project;
 
 use Bild\Console\Command\BaseCommand;
+use Symfony\Component\Config\Definition\Exception\Exception;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\ArrayInput;
@@ -42,14 +43,24 @@ class CreateProject extends BaseCommand {
     $fs = new Filesystem();
 
     // Set up new project directory, fail if directory exists.
+    if ($fs->exists($this->project_directory)) {
+      throw new \RuntimeException("The project directory already exists, you cannot create a new project here");
+    }
+    $fs->mkdir($this->project_directory);
 
     // Move bild.yml config to root.
+    $dir = pathinfo(__FILE__, PATHINFO_DIRNAME);
+    $dir = str_replace('src/Bild/Console/Command/Project', 'config', $dir);
+    $fs->copy($dir . '/bild/bild.yml', $this->project_directory);
 
     // Move travis.yml into root (TODO - Add config for Github).
+    $fs->copy($dir . '/travis/.travis.yml', $this->project_directory);
 
     // Move docs.
+    $fs->copy($dir . '/docs', $this->project_directory);
 
     // Move scripts.
+    $fs->copy($dir . '/scripts', $this->project_directory);
 
     /**
      * Run initial project set up commands.
@@ -77,8 +88,8 @@ class CreateProject extends BaseCommand {
     $command_input = new ArrayInput($command_arguments);
     $returnCode = $command->run($command_input, $output);
 
-    // Futher instructions.
-    $output->writeln("<info>Initialization complete. Please configure $this->project_directory/config.yml and then run the InitializeProject command</info>");
+    // Further instructions.
+    $output->writeln("<info>Initialization complete. Please configure $this->project_directory/bild.yml and then run the InitializeProject command. Also, update your project readme.md, docs/technical_architecture.md, travis.yml, and all files under the scripts directory.</info>");
   }
 
 }
