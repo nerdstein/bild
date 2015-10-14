@@ -1,0 +1,37 @@
+api: 2
+core: 8.x
+
+defaults:
+  projects:
+    subdir: "modules/contrib"
+
+projects:
+  drupal:
+    type: core
+    version: 8.0.0-rc1
+    patch:
+      #- "https://www.drupal.org/files/issues/dispatch_events_at_key-2535458-38.patch"
+  config_update:
+    version: "1.x-dev"
+  devel:
+    version: "1.x-dev"
+  environment:
+    type: "module"
+    version: "1.x-dev"
+    download:
+      type: "git"
+      branch: "8.x-1.x"
+      url: "http://git.drupal.org/project/environment.git"
+  features:
+    version: "3.0-alpha2"
+    patch:
+      - "https://www.drupal.org/files/issues/2542640.proxy_class.1.patch"
+  memcache:
+    version: "2.x-dev"
+  migrate_plus:
+    type: "module"
+    version: "1-x"
+    download:
+      type: "git"
+      branch: "8.x-1.x"
+      url: "http://git.drupal.org/project/migrate_plus.git"

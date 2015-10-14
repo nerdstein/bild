@@ -1,0 +1,156 @@
+project:
+  # The machine_subname value is the non-human-readable name of your project. This value is
+  # used to correctly configure settings in
+  # settings.php includes. This will also determine the the directory name
+  # of the new repository.
+  machine_subname: 'projectname'
+  # This is the human readable name for the project.
+  human_name: 'Project Name'
+  # This is used for configuring your local $base_url.
+  local_url: 'http://project.local/'
+  # This is the default makefile that will be used to build dependencies.
+  # You do not need to change this. It is located in /scripts.
+  make_file: 'scripts/project.make.yml'
+  # Please ensure your profile is also in your make file.
+  install_profile: 'standard'
+  # List out custom directories of docroot. Rebuild with patches.
+  custom_directories:
+    - 'docroot/modules/custom'
+    - 'docroot/themes/custom'
+    - 'docroot/sites/default/settings/'
+    - 'docroot/sites/default/drush/'
+    - 'docroot/sites/default/services.yml'
+    - 'docroot/sites/default/settings.php'
+    - 'docroot/sites/sites.php'
+
+# Configuration related to the front-end of the site.
+frontend:
+  # Relative path to the theme.
+  theme_path: '/docroot/themes/custom/theme_name'
+  compiled_resources:
+    - 'docroot/themes/custom/theme_name/css/style.css'
+
+  # Gemfile used within the theme.
+  # Sample: http://bundler.io/gemfile.html
+  gemfile: 'gemfile'
+
+  # Task runner used by the theme.
+  #task_runner: 'grunt'
+  task_runner: 'gulp'
+  #task_runner: 'compass'
+  #task_runner: 'sass'
+
+
+# Configuration related to the enabled validation routines.
+validation:
+  phpcs: 'PHP Code Sniffer'
+  #phpmd: 'PHP Mess Detection'
+  phplint: 'PHP Lint'
+  #makefile: 'Project Makefile'
+  # Configure directories to run validation against.
+  directories:
+    - "docroot/modules/custom"
+    - "docroot/themes/custom"
+    # - "docroot/sites/default/settings"
+  ignore:
+    - "docroot/modules/contrib/*"
+    - "*.js"
+    - "*.css"
+  extensions:
+    - "php"
+    - "install"
+    - "inc"
+    - "module"
+    - "install"
+    - "profile"
+    - "test"
+    - "theme"
+
+# Configuration related to the enabled validation routines.
+automated-tests:
+  security-updates: 'Project Drupal security updates'
+  behat: 'Project Behat tests'
+  phpunit: 'Project PHPUnit tests'
+
+# Configuration related to syncing the github repo with the acquia repo via Travis.
+deployment:
+  prod-branch: 'master'
+  integration-branch: 'integration'
+
+# Configuration for the Ansible Drupal VM. To prevent inclusion of a vm, remove
+# the "vm" key.
+vm:
+  # If true, this provisions and launches the virtual machine as part of the
+  # installation process. Note that dependencies (vagrant, ansible, virtual box)
+  # must be installed for this work.
+  # @see /box
+  bootstrap: false
+  # This loads the necessary ansible requirements for bootstrapping the VM.
+  rebuild_requirements: true
+  # Setting the IP address, if running multiple VMs concurrently.
+  vagrant_ip: 192.168.88.93
+  # Sets Drush Version. Drupal 8 requires Drush 8.
+  drush_version: 8.0.0-beta11
+  # Informs the VM which version of Drupal to run.
+  drupal_major_version: 8
+  # Load project-specific Composer libraries.
+  composer_global_packages:
+    # Load Behat libraries.
+    - { name: 'behat/behat', release: '3.0.*' }
+    - { name: 'behat/mink', release: '1.6@stable' }
+    - { name: 'behat/mink-extension', release: '*' }
+    - { name: 'behat/mink-goutte-driver', release: '*' }
+    - { name: 'behat/mink-selenium2-driver', release: '*' }
+    - { name: 'behat/mink-zombie-driver', release: '*' }
+    - { name: 'behat/mink-browserkit-driver', release: '*' }
+    - { name: 'drupal/drupal-extension', release: '*' }
+  # Comment out any extra VM utilities you don't want to install. If you don't want
+  # to install *any* extras, make set this value to an empty set, e.g. `[]`.
+  installed_extras:
+    # GUI for database utility, [local_url]/adminer.
+    #- adminer
+    # Catches mail generated from local system, [local_url]:8025.
+    - mailhog
+    # Local memcache instance
+    - memcached
+    # GUI for log utility, pimpmylog.[local_url].
+    - pimpmylog
+    # Local SOLR instance, [local_url]:8443/solr.
+    - solr
+    # Local Varnish instance.
+    - varnish
+    # Turn on Xdebug.
+    - xdebug
+    # Local XHProf instance, xhprof.[local_url].
+    - xhprof
+    # Local selenium server for the VM
+    - selenium
+
+# Configuration settings for new git repository.
+git:
+  # These git hooks will be installed in .git/hooks.
+  hooks:
+    # Validates commit message syntax prior to local git commits.
+    - commit-msg
+    # Runs PHP Code Sniffer prior to local git commits.
+    - pre-commit
+  # The following list of remotes can be configured for your project needs. The example list below is provided
+  # only for placeholder. Keys should be the remote. The value for the key should be your specific repository.
+  remotes:
+    # Example GitHub placeholder. You can copy this for your fork (e.g. 'origin') and your project (e.g. 'upstream').
+    upstream: 'git@github.com:namespace/project.git'
+    # Example Acquia Cloud placeholder. Please change the tokens below for your Acquia Cloud sub.
+    acquia: 'project@svn-xxxx.prod.hosting.acquia.com:project.git'
+    developer1: 'git@github.com:developer1/project.git'
+    developer2: 'git@github.com:developer2/project.git'
+
+# The testing framework is limited to the `tests` directory, and includes
+# example tests and configuration for Behat, PHPUnit, and JMeter. To prevent
+# this from being copied, remove the 'testing_framework' key.
+testing_framework:
+  # Behat-specific configuration.
+  behat:
+    # Select the javascript driver for use within Behat testing.
+    # Supported values include: selenium2, zombie
+    # For help determining the most relevant driver: http://mink.behat.org/en/latest/guides/drivers.html.
+    javascript_driver: 'selenium2'

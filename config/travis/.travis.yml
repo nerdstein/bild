@@ -1,0 +1,65 @@
+---
+# More information about configuring your Travis build using this .travis.yml
+# file can be found here: http://docs.travis-ci.com/user/build-configuration/
+language: python
+python: "2.7"
+
+sudo: true
+
+before_install:
+  # Make sure we have the latest versions of all our packages.
+  - sudo apt-get update -qq
+
+install:
+  # Install and configure Ansible (used to easily configure our environment).
+  - pip install ansible
+  - "{ echo '[defaults]'; echo 'roles_path = ../'; } >> ansible.cfg"
+  - ansible-galaxy install -r build/travis/requirements.txt --ignore-errors
+  - ansible-playbook -i build/travis/inventory build/travis/playbook.yml --connection=local --sudo
+  # Load composer dependencies.
+  - cd $TRAVIS_BUILD_DIR/tasks
+  - composer install
+  - export PATH=$PATH:$TRAVIS_BUILD_DIR/tasks/vendor/bin
+  - cd $TRAVIS_BUILD_DIR
+  - ls -al ~
+  - bild project:load-composer-dependencies
+
+mysql:
+  database: travis_ci_project
+  username: root
+  encoding: utf8
+
+addons:
+  firefox: "39.0"
+  hosts:
+    - travisci.local
+
+cache:
+  bundler: true
+  apt: true
+  directories:
+    - $HOME/.composer/cache
+    - $HOME/.drush/cache
+
+notifications:
+  email:
+    - email@email.com
+    - email2@email.com
+  slack: domain:chatroomidentifier
+
+before_script:
+  # Clear drush release history cache, to pick up new releases.
+  - rm -f ~/.drush/cache/download/*---updates.drupal.org-release-history-*
+  - echo -e "Host *\n\tStrictHostKeyChecking no\n" >> ~/.ssh/config
+  - sudo usermod -a -G www-data travis
+  # Build the codebase and stage the setup.
+  - bild travis:initialize
+
+script:
+  # Run tests.
+  - bild testing:validate
+  - bild testing:automated-tests --travis
+
+after_success:
+  # Sync upstream to "repo".
+  - if [ $TRAVIS_TAG ]; then bild project:publish $TRAVIS_TAG upstream $TRAVIS_BRANCH repo $TRAVIS_BRANCH --process-tag; fi;

@@ -1,0 +1,8 @@
+#!/bin/bash
+ 
+ROOT_DIR="$(pwd)/"
+
+echo "Running Code Commit Validation..."
+bild repo:validate-commit >&2
+ 
+exit $?

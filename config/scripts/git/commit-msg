@@ -1,0 +1,14 @@
+#!/bin/sh
+#
+# To enable this hook, developers should place it in .git/hooks/.
+#
+# Replace "PROJECT" by your project code.
+# You may adapt the message length check. Currently checking it's longer than 15 characters.
+
+regex="^PROJECT-[0-9]\+ - [^ ].\{15,\}"
+msg_test=`grep -e ''"$regex"'' "$1"`
+if [ "$msg_test" == "" ]; then
+  echo "Invalid commit message."
+  echo "Valid example: PROJECT-135 - Add the new picture field to the article feature"
+  exit 1;
+fi
