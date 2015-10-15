@@ -45,15 +45,15 @@ class CheckVmDependencies extends BaseCommand {
     // Check for virtualbox version 4.3.x.
     $output->writeln('<info>Checking for virtualbox</info>');
     $result = strtolower($this->executeProcess('VBoxManage -v'));
-    if ($result == '-bash: vboxmanage: command not found') {
+    if (strpos($result, 'vboxmanage: command not found')) {
       $output->writeln('<error>Unmet dependency, please install virtualbox 4.3.x</error>');
-      return;
+      throw new \RuntimeException('Virtualbox is missing');
     }
     else {
       $parsed_version = explode(".", $result);
       // Check major and minor version.
-      if ($parsed_version[0] != '4' and $parsed_version[1] != '3') {
-        $output->writeln('<comment>Unmet dependency, please upgrade virtualbox to version 4.3.x</comment>');
+      if ($parsed_version[0] != '5' and $parsed_version[1] != '0') {
+        $output->writeln('<comment>Unmet dependency, please upgrade virtualbox to version 5.0.x</comment>');
         $has_errors = TRUE;
       }
       else {
@@ -64,7 +64,7 @@ class CheckVmDependencies extends BaseCommand {
     // Check for vagrant 1.7.2 or higher.
     $output->writeln('<info>Checking for vagrant</info>');
     $result = strtolower($this->executeProcess('vagrant -v'));
-    if ($result == '-bash: vagrant: command not found') {
+    if (strpos($result, 'vagrant: command not found')) {
       $output->writeln('<error>Unmet dependency, please install vagrant 1.7.2 or higher</error>');
       $has_errors = TRUE;
     }
@@ -83,7 +83,7 @@ class CheckVmDependencies extends BaseCommand {
 
     // Check for ansible version 1.9.2 or higher.
     $result = strtolower($this->executeProcess('ansible --version'));
-    if ($result == '-bash: ansible: command not found') {
+    if (strpos($result, 'ansible: command not found')) {
       $output->writeln('<error>Unmet dependency, please install ansible 1.9.2 or higher. To install, run `sudo pip install ansible`.</error>');
       $has_errors = TRUE;
     }
@@ -101,7 +101,7 @@ class CheckVmDependencies extends BaseCommand {
     }
 
     // Check for duplicate machine names and duplicate IP within VirtualBox.
-    $output->writeln('<info>Checking for duplicant virtualbox host names and IPs</info>');
+    $output->writeln('<info>Checking for duplicated virtualbox host names and IPs</info>');
     $result = $this->executeProcess('vboxmanage list vms', FALSE);
     $existing_hosts = explode("\n", strtolower($result));
     $local_url = parse_url($this->project_config['project']['local_url']);
@@ -150,7 +150,7 @@ class CheckVmDependencies extends BaseCommand {
     }
 
     // Return whether or not there were issues found that would impede the VM.
-    return $has_errors;
+    throw new \RuntimeException('Virtualbox is missing');
   }
 
 }

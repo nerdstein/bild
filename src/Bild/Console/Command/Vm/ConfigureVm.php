@@ -51,24 +51,24 @@ class ConfigureVm extends BaseCommand {
     $vm_config['vagrant_synced_folders'][] = array(
       'local_path' => "{$this->project_directory}/scripts",
       'destination' => '/scripts',
-      'id' => 'project_template_scripts',
       'type' => 'nfs',
+      'create' => 'true',
     );
 
     // Add the tests directory to the synced folders list.
     $vm_config['vagrant_synced_folders'][] = array(
       'local_path' => "{$this->project_directory}/tests",
       'destination' => '/tests',
-      'id' => 'project_template_tests',
       'type' => 'nfs',
+      'create' => 'true',
     );
 
     // Add the tasks directory to the synced folders list.
     $vm_config['vagrant_synced_folders'][] = array(
       'local_path' => "{$this->project_directory}/tasks",
       'destination' => '/tasks',
-      'id' => 'project_template_tasks',
       'type' => 'nfs',
+      'create' => 'true',
     );
 
     // Use the docroot as the site's primary synced folder.
@@ -95,9 +95,8 @@ class ConfigureVm extends BaseCommand {
     $vm_config['vagrant_ip'] = $this->project_config['vm']['vagrant_ip'];
 
     // Mimic Acquia Cloud configuration.
-    $vm_config['vagrant_box'] = 'geerlingguy/ubuntu1204';
-    $vm_config['php_version'] = '5.5';
-    $vm_config['solr_version'] = '4.5.1';
+    $vm_config['php_version'] = $this->project_config['vm']['php_version'];
+    $vm_config['solr_version'] = $this->project_config['vm']['solr_version'];;
 
     // Specify the VM extras you wish you install for this project.
     $vm_config['installed_extras'] = $this->project_config['vm']['installed_extras'];
@@ -114,8 +113,9 @@ class ConfigureVm extends BaseCommand {
     $vm_config['drupal_major_version'] = $this->project_config['vm']['drupal_major_version'];
 
     // Set apache vhosts by project, not to DrupalVM default.
-    $vm_config['apache_vhosts'][1]['servername'] = 'xhprof.' . $local_url['host'];
-    $vm_config['apache_vhosts'][2]['servername'] = 'pimpmylog.' . $local_url['host'];
+    $vm_config['apache_vhosts'][1]['servername'] = 'adminer.' . $local_url['host'];
+    $vm_config['apache_vhosts'][2]['servername'] = 'xhprof.' . $local_url['host'];
+    $vm_config['apache_vhosts'][3]['servername'] = 'pimpmylog.' . $local_url['host'];
 
     // Update the path to make file.
     $make_file = $this->project_config['project']['make_file'];

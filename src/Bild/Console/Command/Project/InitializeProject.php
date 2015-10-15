@@ -81,16 +81,6 @@ class InitializeProject extends BaseCommand {
 
       $command_input = new ArrayInput($command_arguments);
       $returnCode = $command->run($command_input, $output);
-
-      // Generate the project documentation table of contents.
-      $command = $this->getApplication()->find('project:generate-docs');
-
-      $command_arguments = array(
-        'command' => 'project:generate-docs',
-      );
-
-      $command_input = new ArrayInput($command_arguments);
-      $returnCode = $command->run($command_input, $output);
     }
 
     // Remake the project.

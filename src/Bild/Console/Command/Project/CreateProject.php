@@ -77,6 +77,9 @@ class CreateProject extends Command {
     // Move scripts.
     $fs->mirror($dir . '/scripts', $project_directory . '/scripts');
 
+    // Move tests.
+    $fs->mirror($dir . '/tests', $project_directory . '/tests');
+
     /**
      * Run initial project set up commands.
      */

@@ -1,9 +1,9 @@
 project:
-  # The machine_subname value is the non-human-readable name of your project. This value is
+  # The machine_name value is the non-human-readable name of your project. This value is
   # used to correctly configure settings in
   # settings.php includes. This will also determine the the directory name
   # of the new repository.
-  machine_subname: 'projectname'
+  machine_name: 'projectname'
   # This is the human readable name for the project.
   human_name: 'Project Name'
   # This is used for configuring your local $base_url.
@@ -89,8 +89,18 @@ vm:
   rebuild_requirements: true
   # Setting the IP address, if running multiple VMs concurrently.
   vagrant_ip: 192.168.88.93
+  # Sets the operating system.
+  os: 'geerlingguy/ubuntu1404'
+  # os: 'geerlingguy/ubuntu1204'
+  # os: 'geerlingguy/centos6'
+  # os: 'geerlingguy/centos7'
+  # os: 'parallels/ubuntu1404'
   # Sets Drush Version. Drupal 8 requires Drush 8.
-  drush_version: 8.0.0-beta11
+  drush_version: 8.0.0-rc1
+  # Sets PHP version.
+  php_version: 5.5
+  # Sets SOLR version.
+  solr_version: 4.5.1
   # Informs the VM which version of Drupal to run.
   drupal_major_version: 8
   # Load project-specific Composer libraries.
@@ -125,6 +135,10 @@ vm:
     - xhprof
     # Local selenium server for the VM
     - selenium
+    # NodeJS
+    #- nodejs
+    # Ruby
+    #- ruby
 
 # Configuration settings for new git repository.
 git:

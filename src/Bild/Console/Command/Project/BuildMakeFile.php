@@ -47,6 +47,8 @@ class BuildMakeFile extends BaseCommand {
     $fs = new Filesystem();
 
     $drush = $this->bin . '/drush';
+    $this->executeProcess("$drush cc drush");
+
     // Start the command.
     if ($with_core) {
       $command = "$drush make ";

@@ -47,7 +47,7 @@ class AddVm extends BaseCommand {
 
     $fs->remove("$this->project_directory/$vm_dir");
     // We are intentionally pinning to a specific release for stability.
-    $this->executeProcess("git clone --branch 1.9.7 git@github.com:geerlingguy/drupal-vm.git $this->project_directory/$vm_dir");
+    $this->executeProcess("git clone --branch 2.1.1 git@github.com:geerlingguy/drupal-vm.git $this->project_directory/$vm_dir");
     $fs->remove("$this->project_directory/$vm_dir/.git");
 
   }
