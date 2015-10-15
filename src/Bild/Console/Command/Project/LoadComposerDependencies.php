@@ -11,6 +11,7 @@ use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
+use Symfony\Component\Filesystem\Filesystem;
 
 /**
  *
@@ -38,6 +39,15 @@ class LoadComposerDependencies extends BaseCommand {
    * @throws \RuntimeException
    */
   protected function execute(InputInterface $input, OutputInterface $output) {
+    $output->writeln('<info>Loading composer...</info>');
+    $fs = new Filesystem();
+
+    // Rebuild composer vendor directory.
+    if ($fs->exists($this->project_directory . '/vendor')) {
+      $this->executeProcess("composer update", TRUE, $this->project_directory);
+    } else {
+      $this->executeProcess("composer install", TRUE, $this->project_directory);
+    }
 
     $output->writeln('<info>Installing coder code sniffer...</info>');
     $phpcs = $this->bin . '/phpcs';

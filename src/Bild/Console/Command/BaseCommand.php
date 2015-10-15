@@ -56,7 +56,8 @@ class BaseCommand extends Command {
     }
     $this->setProjectConfig();
 
-    $this->bin = str_replace('src/Drop/Console/Command', 'vendor/bin', dirname(__FILE__));
+    $this->bin = str_replace('src/Bild/Console/Command', 'vendor/bin', dirname(__FILE__));
+    $output->writeln('Bin directory => ' . $this->bin);
   }
 
   /**
