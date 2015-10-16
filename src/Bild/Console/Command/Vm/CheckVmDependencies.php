@@ -147,10 +147,9 @@ class CheckVmDependencies extends BaseCommand {
     if ($has_errors) {
       $output->writeln('<error>Errors were generated during the installation process. Please review the errors and manually bootstrap the VM.</error>');
       $output->writeln("<info>To set up the Drupal VM, follow the Quick Start Guide at http://www.drupalvm.com</info>");
+      // Return whether or not there were issues found that would impede the VM.
+      throw new \RuntimeException('Please review the error log above.');
     }
-
-    // Return whether or not there were issues found that would impede the VM.
-    throw new \RuntimeException('Virtualbox is missing');
   }
 
 }

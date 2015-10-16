@@ -100,23 +100,23 @@ $application->add(new \Bild\Console\Command\Project\LoadComposerDependencies());
 // To run: php engine.php project:publish  v1.0.0 origin master hosting master --process-tag.
 $application->add(new \Bild\Console\Command\Project\PublishRepo());
 
-// To run: php engine.php project:rebuild-site .
+// To run: php engine.php project:rebuild-site.
 $application->add(new \Bild\Console\Command\Project\RebuildSite());
 
 // To run: php engine.php project:release-notes  user pass project repo branch 01/01/2015 --limit=100.
 $application->add(new \Bild\Console\Command\Project\GenerateReleaseNotes());
 
-// To run: php engine.php testing:automated-tests .
-$application->add(new \Bild\Console\Command\Testing\RunAutomatedTests());
-
-// To run: php engine.php project:run-phpcbf .
+// To run: php engine.php project:run-phpcbf.
 $application->add(new \Bild\Console\Command\Project\RunPHPCBF());
 
-// To run: php engine.php testing:validate .
-$application->add(new \Bild\Console\Command\Testing\RunValidationTests());
+// To run: php engine.php project:setup-local.
+$application->add(new \Bild\Console\Command\Project\SetupLocal());
 
-// To run: php engine.php project:sync  hosting master.
+// To run: php engine.php project:sync hosting master.
 $application->add(new \Bild\Console\Command\Project\SyncRepos());
+
+// To run: php engine.php testing:automated-tests .
+$application->add(new \Bild\Console\Command\Testing\RunAutomatedTests());
 
 // To run: php engine.php testing:behat .
 $application->add(new \Bild\Console\Command\Testing\TestBehat());
@@ -126,6 +126,9 @@ $application->add(new \Bild\Console\Command\Testing\TestPHPUnit());
 
 // To run: php engine.php testing:security-updates .
 $application->add(new \Bild\Console\Command\Testing\TestSecurityUpdates());
+
+// To run: php engine.php testing:validate .
+$application->add(new \Bild\Console\Command\Testing\RunValidationTests());
 
 // To run: php engine.php testing:validate-blacklist .
 $application->add(new \Bild\Console\Command\Testing\ValidateBlacklist());

@@ -48,6 +48,9 @@ class InitializeFrontendTools extends BaseCommand {
     // Install specific task runner.
     switch ($this->project_config['frontend']['task_runner']) {
       case 'gulp':
+        if ($this->executeProcess('which npm')=='') {
+          throw new \RuntimeException('Please install Node and NPM on your local system');
+        }
         $this->executeProcess('npm install gulp -g');
         $this->executeProcess('(cd ' . $theme_path . ' && npm install)');
         $this->executeProcess('npm install --save-dev --prefix=' . $theme_path . ' gulp');

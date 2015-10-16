@@ -17,7 +17,7 @@ use Symfony\Component\Filesystem\Filesystem;
 /**
  *
  */
-class InitializeProject extends BaseCommand {
+class SetupLocal extends BaseCommand {
 
 
   /**
@@ -28,8 +28,8 @@ class InitializeProject extends BaseCommand {
     parent::configure();
 
     $this
-      ->setName('project:initialize')
-      ->setDescription('A manifest to initially build a configured project');
+      ->setName('project:setup-local')
+      ->setDescription('A manifest to load an existing project on a local machine');
 
   }
 
@@ -57,64 +57,8 @@ class InitializeProject extends BaseCommand {
     $command_input = new ArrayInput($command_arguments);
     $returnCode = $command->run($command_input, $output);
 
-    // Set up testing framework.
-    if (!empty($this->project_config['testing_framework'])) {
-
-      $command = $this->getApplication()->find('project:configure-testing');
-
-      $command_arguments = array(
-        'command' => 'project:configure-testing',
-      );
-
-      $command_input = new ArrayInput($command_arguments);
-      $returnCode = $command->run($command_input, $output);
-    }
-
-    if (!empty($this->project_config['docs'])) {
-      // Initialize the desired project documents.
-      $command = $this->getApplication()
-        ->find('project:initialize-documentation');
-
-      $command_arguments = array(
-        'command' => 'project:initialize-documentation',
-      );
-
-      $command_input = new ArrayInput($command_arguments);
-      $returnCode = $command->run($command_input, $output);
-    }
-
-    // Remake the project.
-    $command = $this->getApplication()->find('project:build-make-file');
-
-    $command_arguments = array(
-      'command' => 'project:build-make-file',
-      'with-core' => 'TRUE',
-    );
-
-    $command_input = new ArrayInput($command_arguments);
-    $returnCode = $command->run($command_input, $output);
-
     // Set up VM.
     if (!empty($this->project_config['vm'])) {
-      // Add the VM.
-      $command = $this->getApplication()->find('vm:add');
-
-      $command_arguments = array(
-        'command' => 'vm:add',
-      );
-
-      $command_input = new ArrayInput($command_arguments);
-      $returnCode = $command->run($command_input, $output);
-
-      // Sync project configuration to the VM.
-      $command = $this->getApplication()->find('vm:configure');
-
-      $command_arguments = array(
-        'command' => 'vm:configure',
-      );
-
-      $command_input = new ArrayInput($command_arguments);
-      $returnCode = $command->run($command_input, $output);
 
       // Check VM dependencies.
       $command = $this->getApplication()->find('vm:check-dependencies');
@@ -164,6 +108,30 @@ class InitializeProject extends BaseCommand {
         $returnCode = $command->run($command_input, $output);
       }
     }
-    $output->writeln('<info>Project initialization has completed. Consider running the setup local command to build out your environment.</info>');
+
+    // Set up frontend.
+    if (!empty($this->project_config['frontend'])) {
+      $command = $this->getApplication()->find('frontend:install');
+
+      $command_arguments = array(
+          'command' => 'frontend:install',
+      );
+
+      $command_input = new ArrayInput($command_arguments);
+      $returnCode = $command->run($command_input, $output);
+    }
+
+    // Set up aliases.
+    if (!empty($this->project_config['project']['alias_file'])) {
+      $command = $this->getApplication()->find('project:add-drush-alias');
+
+      $command_arguments = array(
+          'command' => 'project:add-drush-alias',
+      );
+
+      $command_input = new ArrayInput($command_arguments);
+      $returnCode = $command->run($command_input, $output);
+    }
+    $output->writeln('<info>Local setup has completed.</info>');
   }
 }

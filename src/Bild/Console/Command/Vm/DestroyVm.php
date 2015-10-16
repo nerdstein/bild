@@ -28,7 +28,12 @@ class DestroyVm extends BaseCommand {
 
     $this
       ->setName('vm:destroy')
-      ->setDescription('Remove the DrupalVM');
+      ->setDescription('Remove the DrupalVM')
+      ->addArgument(
+          'remove-files',
+          InputArgument::OPTIONAL,
+          'Do you want to remove the VM configuration files as well as the VM?'
+      );
 
   }
 
@@ -40,13 +45,17 @@ class DestroyVm extends BaseCommand {
    */
   protected function execute(InputInterface $input, OutputInterface $output) {
     $fs = new Filesystem();
+    $remove_files = $input->getArgument('remove-files');
 
     $output->writeln('<info>Removing the Drupal VM...</info>');
 
     // Add Drupal VM Vagrant box repository and then remove the .git files.
     $vm_dir = 'box';
-    $result = strtolower($this->executeProcess('(cd ' . $this->project_directory . '/' . $vm_dir . ' && vagrant destroy --force )'));
-    $fs->remove("$this->project_directory/$vm_dir");
+    $result = strtolower($this->executeProcess('vagrant destroy --force', TRUE, $this->project_directory . '/' . $vm_dir));
+
+    if ($remove_files) {
+      $fs->remove("$this->project_directory/$vm_dir");
+    }
 
   }
 }

@@ -45,7 +45,7 @@ class BootstrapVm extends BaseCommand {
     // Load ansible reqs.
     if (!empty($this->project_config['vm']['rebuild_requirements']) and $this->project_config['vm']['rebuild_requirements']) {
       $output->writeln('<info>Loading ansible requirements. NOTE - you will be prompted to enter your sudo password</info>');
-      $role_file = $this->project_directory . '/' . $vm_dir . '/provisioning/requirements.txt';
+      $role_file = $this->project_directory . '/' . $vm_dir . '/provisioning/requirements.yml';
       $result = strtolower($this->executeProcess('sudo ansible-galaxy install --force --role-file=' . $role_file));
     }
 

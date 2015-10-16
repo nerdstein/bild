@@ -65,6 +65,7 @@ class BuildMakeFile extends BaseCommand {
 
     // Run the command.
     $output->writeln("<info>Running Drush Make into your project docroot...</info>");
+    $output->write($command);
     $this->executeProcess($command);
   }
 

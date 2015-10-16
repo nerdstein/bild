@@ -14,6 +14,7 @@ use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Filesystem\Filesystem;
 use Symfony\Component\Yaml\Yaml;
 use Symfony\Component\Yaml\Parser;
+#use Spyc;
 
 /**
  *
@@ -46,6 +47,7 @@ class ConfigureVm extends BaseCommand {
     // Load the example configuration file included with Drupal VM.
     $parser = new Parser();
     $vm_config = $parser->parse(file_get_contents("{$this->project_directory}/$vm_dir/example.config.yml"));
+    //$vm_config = Spyc::YAMLLoad("{$this->project_directory}/$vm_dir/example.config.yml");
 
     // Add the scripts directory to synced folders list.
     $vm_config['vagrant_synced_folders'][] = array(
@@ -101,6 +103,10 @@ class ConfigureVm extends BaseCommand {
     // Specify the VM extras you wish you install for this project.
     $vm_config['installed_extras'] = $this->project_config['vm']['installed_extras'];
 
+    if (empty($vm_config['installed_extras'])) {
+      $vm_config['installed_extras'] = [];
+    }
+
     // Specify project specific global Composer packages.
     $vm_config['composer_global_packages'] = $this->project_config['vm']['composer_global_packages'];
 
@@ -134,8 +140,11 @@ class ConfigureVm extends BaseCommand {
     // Set the installed version of drush.
     $vm_config['drush_version'] = $this->project_config['vm']['drush_version'];
 
+    // Check "arrays" to make sure they are arrays.
+
     // Write adjusted config.yml to disk.
     $fs->dumpFile("$this->project_directory/$vm_dir/config.yml", Yaml::dump($vm_config, 4, 2));
+    //$fs->dumpFile("$this->project_directory/$vm_dir/config.yml", Spyc::YAMLDump($vm_config));
 
     $output->writeln("<info>Drupal VM was installed to `$this->project_directory/box`.</info>");
   }

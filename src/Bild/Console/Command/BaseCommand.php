@@ -36,6 +36,7 @@ class BaseCommand extends Command {
    */
   protected function configure() {
     $this
+      ->setName('bild:base-command')
       ->addOption(
         'project-dir',
         'd',
@@ -56,7 +57,8 @@ class BaseCommand extends Command {
     }
     $this->setProjectConfig();
 
-    $this->bin = str_replace('src/Bild/Console/Command', 'vendor/bin', dirname(__FILE__));
+    //$this->bin = str_replace('src/Bild/Console/Command', 'vendor/bin', dirname(__FILE__));
+    $this->bin = $this->project_directory . '/vendor/bin';
   }
 
   /**
