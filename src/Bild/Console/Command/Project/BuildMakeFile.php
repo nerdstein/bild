@@ -33,6 +33,11 @@ class BuildMakeFile extends BaseCommand {
         'with-core',
         InputArgument::OPTIONAL,
         'Which directory does your project reside?'
+      )
+      ->addArgument(
+        'working-copy',
+        InputArgument::OPTIONAL,
+        'Do you want working copies of the repos?'
       );
   }
 
@@ -44,6 +49,7 @@ class BuildMakeFile extends BaseCommand {
    */
   protected function execute(InputInterface $input, OutputInterface $output) {
     $with_core = $input->getArgument('with-core');
+    $working_copy = $input->getArgument('working-copy');
     $fs = new Filesystem();
 
     $drush = $this->bin . '/drush';
@@ -55,6 +61,10 @@ class BuildMakeFile extends BaseCommand {
     }
     else {
       $command = "$drush make --no-core ";
+    }
+
+    if ($working_copy) {
+      $command .= "--working-copy ";
     }
 
     // Specify the location of the make file.
