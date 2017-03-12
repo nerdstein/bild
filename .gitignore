@@ -1,3 +1,4 @@
 vendor/
 vendor/.git
 .idea/
+src/Bild/Command/Test*.php

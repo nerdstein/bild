@@ -1,4 +1,52 @@
 #!/usr/bin/env php
 <?php
 
-require 'engine.php';
+use Consolidation\AnnotatedCommand\CommandFileDiscovery;
+use Robo\Robo;
+use Robo\Runner as RoboRunner;
+use League\Container\Container;
+use Bild\Hook\ConfigurationHook;
+
+// Roadmap:
+// X - Lightweight plugins
+// ** - Full weight plugins with CGR
+// Discovery for finding and overriding commands
+// Config? Symfony Config, dependency injection -> validation to check config
+// Plugin dependencies?
+// Extend command parser to pull default values from config instead of code
+
+// Autoload logic.
+if (file_exists(__DIR__.'/vendor/autoload.php')) {
+    require_once __DIR__.'/vendor/autoload.php';
+} elseif (file_exists(__DIR__.'/../../autoload.php')) {
+    require_once __DIR__ . '/../../autoload.php';
+}
+
+// Run discovery.
+$path = 'src/Bild/Command';
+$namespace = 'Bild\Command';
+$discovery = new CommandFileDiscovery();
+$discovery->setSearchPattern('*Command.php')->setSearchLocations([]);
+$command_classes = $discovery->discover($path, $namespace);
+
+// Set up.
+$input = new \Symfony\Component\Console\Input\ArgvInput($argv);
+$output = new \Symfony\Component\Console\Output\ConsoleOutput();
+$conf = new \Robo\Config();
+/** @var $container Container */
+$container = \Robo\Robo::createDefaultContainer($input, $output, NULL, $conf);
+$runner = new RoboRunner($command_classes);
+$runner->setContainer($container);
+
+// Bridge bild config with container.
+$config_hook = new ConfigurationHook();
+/** @var $factory Consolidation\AnnotatedCommand\AnnotatedCommandFactory */
+$factory = $container->get('commandFactory');
+$factory->setIncludeAllPublicMethods(FALSE);
+$factory->hookManager()->addInitializeHook($config_hook);
+
+// Run the app.
+$app = new \Symfony\Component\Console\Application('Bild', '0.0.0-alpha0');
+$statusCode = $runner->run($input, $output, $app, $command_classes);
+
+exit($statusCode);
