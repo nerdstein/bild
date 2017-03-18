@@ -2,6 +2,8 @@
 
 Dev Ops and Continuous Integration commands for Drupal projects
 
+Git is a requirement
+
 Documentation:
 
 1. [Overview](docs/overview.md)

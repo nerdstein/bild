@@ -17,6 +17,7 @@
     "symfony/yaml": "~3",
     "symfony/finder": "~3",
     "symfony/config": "~3",
+    "cpliakas/git-wrapper": "~1",
     "consolidation/robo": "~1"
   },
   "autoload": {

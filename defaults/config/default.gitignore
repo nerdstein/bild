@@ -1,0 +1,8 @@
+# Local files
+.DS_Store
+
+# IDE files
+.idea
+
+# Composer files
+vendor

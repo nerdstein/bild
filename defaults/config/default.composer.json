@@ -1,0 +1,16 @@
+{
+  "name": "MY-ORG/MY-PROJECT",
+  "description": "MY PROJECT DESCRIPTION",
+  "license": "MY-LICENSE",
+  "authors": [
+    {
+      "name": "MY NAME",
+      "email": "MY EMAIL",
+      "homepage": "http://MY.SITE"
+    }
+  ],
+  "require": {
+    "drush/drush": "~8",
+    "drupal/console": "@stable"
+  }
+}

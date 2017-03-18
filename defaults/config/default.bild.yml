@@ -1,0 +1,24 @@
+# PROJECT STUFF
+
+# The machine_name value is the non-human-readable name of your project. This value is
+# used to correctly configure settings in
+# settings.php includes. This will also determine the the directory name
+# of the new repository.
+machine_name: 'projectname'
+# This is the human readable name for the project.
+human_name: 'Project Name'
+# List out custom directories of docroot. Rebuild with patches.
+custom_directories:
+  - 'docroot/modules/custom'
+  - 'docroot/themes/custom'
+  - 'docroot/sites/default/settings/'
+  - 'docroot/sites/default/drush/'
+  - 'docroot/sites/default/services.yml'
+  - 'docroot/sites/default/settings.php'
+  - 'docroot/sites/sites.php'
+# Major version.
+drupal_version: '8.3.x'
+# Location of Drupal code.
+drupal_docroot: 'docroot'
+# Install profile.
+drupal_install_profile: 'standard'
