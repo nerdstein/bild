@@ -2,3 +2,4 @@ vendor/
 vendor/.git
 .idea/
 src/Bild/Command/Test*.php
+.DS_Store
