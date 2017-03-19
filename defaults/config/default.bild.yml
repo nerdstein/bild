@@ -4,11 +4,11 @@
 # used to correctly configure settings in
 # settings.php includes. This will also determine the the directory name
 # of the new repository.
-machine_name: 'projectname'
+machine-name: 'projectname'
 # This is the human readable name for the project.
-human_name: 'Project Name'
+human-name: 'Project Name'
 # List out custom directories of docroot. Rebuild with patches.
-custom_directories:
+custom-directories:
   - 'docroot/modules/custom'
   - 'docroot/themes/custom'
   - 'docroot/sites/default/settings/'
@@ -17,8 +17,8 @@ custom_directories:
   - 'docroot/sites/default/settings.php'
   - 'docroot/sites/sites.php'
 # Major version.
-drupal_version: '8.3.x'
-# Location of Drupal code.
-drupal_docroot: 'docroot'
+drupal-version: '8.3.x'
+# Relative path of Drupal code.
+drupal-docroot: 'docroot'
 # Install profile.
-drupal_install_profile: 'standard'
+drupal-install-profile: 'standard'

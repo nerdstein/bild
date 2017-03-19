@@ -13,13 +13,15 @@ class DefaultCommand {
    *
    * @command project:initialize
    */
-  public function initialize($arguments = ['project-dir' => __DIR__], $options = ['gitignore' => TRUE, 'composer' => TRUE, 'docs' => TRUE, 'scripts' => TRUE, 'tests' => TRUE]) {
+  public function initialize($options = ['set-project-dir' => FALSE,'no-gitignore' => FALSE, 'no-composer' => FALSE, 'no-docs' => FALSE, 'no-scripts' => FALSE, 'no-tests' => FALSE]) {
+    $git = new GitWrapper();
     $fs = new Filesystem();
+    $project_dir = $options['set-project-dir']?$options['set-project-dir']:getcwd();
     // Set up new project directory, fail if directory exists.
-    if ($fs->exists($arguments['project-dir'])) {
+    if ($fs->exists($project_dir)) {
       throw new \RuntimeException("The project directory already exists, you cannot create a new project here");
     }
-    $fs->mkdir($arguments['project-dir']);
+    $fs->mkdir($project_dir);
 
     // Load bild defaults directory.
     $defaults_dir = str_replace('src/Bild/Command', 'defaults', pathinfo(__FILE__, PATHINFO_DIRNAME));
@@ -27,37 +29,38 @@ class DefaultCommand {
     //TODO - Set gitignore, docs, tests, and composer settings in bild.yml before writing.
 
     // Copy bild configuration file.
-    $fs->copy($defaults_dir . '/config/default.bild.yml', $arguments['project-dir'] . '/bild.yml');
-    print "\nDefault bild.yml configuration has been created in " . $arguments['project-dir'] . ". Please customize and run the setup command.";
+    $fs->copy($defaults_dir . '/config/default.bild.yml', $project_dir . '/bild.yml');
+    print "\nDefault bild.yml configuration has been created in " . $project_dir . ". Please customize and run the setup command.";
 
     // Copy default gitignore file.
-    if ($options['gitignore']) {
-      $fs->copy($defaults_dir . '/config/default.gitignore', $arguments['project-dir'] . '/.gitignore');
-      print "\nInitial .gitignore has been created in " . $arguments['project-dir'] . ".";
+    if (!$options['no-gitignore']) {
+      $git->init($project_dir);
+      $fs->copy($defaults_dir . '/config/default.gitignore', $project_dir . '/.gitignore');
+      print "\nInitial git repo and .gitignore has been created in " . $project_dir . ".";
     }
 
     // Copy default composer file.
-    if ($options['composer']) {
-      $fs->copy($defaults_dir . '/config/default.composer.json', $arguments['project-dir'] . '/bild.yml');
-      print "\nDefault composer.json has been created in " . $arguments['project-dir'] . ". Please customize and run the setup command.";
+    if (!$options['no-composer']) {
+      $fs->copy($defaults_dir . '/config/default.composer.json', $project_dir . '/bild.yml');
+      print "\nDefault composer.json has been created in " . $project_dir . ". Please customize and run the setup command.";
     }
 
     // Copy default docs file.
-    if ($options['docs']) {
-      $fs->mirror($defaults_dir . '/docs', $arguments['project-dir'] . '/docs');
-      print "\nInitial docs has been created in " . $arguments['project-dir'] . ".";
+    if (!$options['no-docs']) {
+      $fs->mirror($defaults_dir . '/docs', $project_dir . '/docs');
+      print "\nInitial docs has been created in " . $project_dir . ".";
     }
 
     // Stub out scripts directory.
-    if ($options['scripts']) {
-      $fs->mkdir($arguments['project-dir'] . '/scripts');
-      print "\nScripts directory created in " . $arguments['project-dir'] . ".";
+    if (!$options['no-scripts']) {
+      $fs->mkdir($project_dir . '/scripts');
+      print "\nScripts directory created in " . $project_dir . ".";
     }
 
     // Stub out tests directory.
-    if ($options['tests']) {
-      $fs->mkdir($arguments['project-dir'] . '/test');
-      print "\nTests directory created in " . $arguments['project-dir'] . ".";
+    if (!$options['no-tests']) {
+      $fs->mkdir($project_dir . '/test');
+      print "\nTests directory created in " . $project_dir . ".";
     }
   }
 
@@ -66,27 +69,28 @@ class DefaultCommand {
    *
    * @command project:setup
    */
-  public function setup($arguments = ['project-dir' => __DIR__], $options = []) {
+  public function setup($options = ['set-project-dir' => FALSE, 'drupal-version' => '8.4.x', 'no-composer' => FALSE, 'drupal-docroot' => 'docroot']) {
+    $git = new GitWrapper();
     $fs = new Filesystem();
+    $project_dir = $options['set-project-dir']?$options['set-project-dir']:getcwd();
     // Run composer install.
-    if ($options['composer']) {
+    if ($options['no-composer']) {
       $process = new Process("composer install");
       $process->setTimeout(3600);
-      $process->setWorkingDirectory($arguments['project-dir']);
+      $process->setWorkingDirectory($project_dir);
       $process->run();
     }
 
-    // Make a docroot.
-    if ($fs->exists($arguments['project-dir'] . '/docroot')) {
+    // Make a new Drupal docroot.
+    if ($fs->exists($project_dir . '/' . $options['drupal-docroot'])) {
       throw new \RuntimeException("The project directory already exists, you cannot create a new project here");
     } else {
-      $git = new GitWrapper();
-      $git->cloneRepository('https://git.drupal.org/project/drupal.git', $arguments['project-dir'] . '/docroot', [
-        'branch' => $options['drupal_version'],
+      $git->cloneRepository('https://git.drupal.org/project/drupal.git', $project_dir  . '/' . $options['drupal-docroot'], [
+        'branch' => $options['drupal-version'],
       ]);
 
       // Remove Drupal git repository.
-      $fs->remove('docroot/.git');
+      $fs->remove($project_dir . '/' . $options['drupal-docroot'] . '/.git');
     }
   }
 }

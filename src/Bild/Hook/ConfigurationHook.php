@@ -21,20 +21,21 @@ class ConfigurationHook implements InitializeHookInterface {
     $config = $locator->locate('bild.yml', NULL, TRUE);*/
 
     //TODO - Explore "state" of application to set config not as option.
-    $input->setOption('bild_has_config', FALSE);
 
     // Load config from current runtime directory.
-    $project_config = __DIR__.'/bild.yml';
+    $project_config = getcwd().'/bild.yml';
     if (file_exists($project_config)) {
-      $input->setOption('bild_has_config', TRUE);
-
       //TODO - Consider config validation.
 
       $parser = new Parser();
       $project_config = $parser->parse(file_get_contents($project_config));
 
       foreach ($project_config as $item => $value) {
-        $input->setOption($item, $value);
+        // We need to check if the command is looking for this config.
+        if ($input->hasOption($item)) {
+          // If so, set the value.
+          $input->setOption($item, $value);
+        }
       }
 
     }

@@ -2,7 +2,6 @@
 <?php
 
 use Consolidation\AnnotatedCommand\CommandFileDiscovery;
-use Robo\Robo;
 use Robo\Runner as RoboRunner;
 use League\Container\Container;
 use Bild\Hook\ConfigurationHook;
@@ -22,8 +21,15 @@ if (file_exists(__DIR__.'/vendor/autoload.php')) {
     require_once __DIR__ . '/../../autoload.php';
 }
 
-// Run discovery.
+// Run discovery for commands found in working directory.
 $path = 'src/Bild/Command';
+$namespace = 'Bild\Command';
+$discovery = new CommandFileDiscovery();
+$discovery->setSearchPattern('*Command.php')->setSearchLocations([]);
+$command_classes = $discovery->discover($path, $namespace);
+
+// Run discovery for commands found in base bild system.
+$path = __DIR__ . '/src/Bild/Command';
 $namespace = 'Bild\Command';
 $discovery = new CommandFileDiscovery();
 $discovery->setSearchPattern('*Command.php')->setSearchLocations([]);
@@ -46,7 +52,7 @@ $factory->setIncludeAllPublicMethods(FALSE);
 $factory->hookManager()->addInitializeHook($config_hook);
 
 // Run the app.
-$app = new \Symfony\Component\Console\Application('Bild', '0.0.0-alpha0');
+$app = new \Symfony\Component\Console\Application('Bild', '1.0.0-alpha0');
 $statusCode = $runner->run($input, $output, $app, $command_classes);
 
 exit($statusCode);
