@@ -13,15 +13,22 @@ class DefaultCommand {
    *
    * @command project:initialize
    */
-  public function initialize($options = ['set-project-dir' => FALSE,'no-gitignore' => FALSE, 'no-composer' => FALSE, 'no-docs' => FALSE, 'no-scripts' => FALSE, 'no-tests' => FALSE]) {
+  public function initialize($options = ['project-dir' => '','no-gitignore' => FALSE, 'no-composer' => FALSE, 'no-docs' => FALSE, 'no-scripts' => FALSE, 'no-tests' => FALSE]) {
     $git = new GitWrapper();
     $fs = new Filesystem();
-    $project_dir = $options['set-project-dir']?$options['set-project-dir']:getcwd();
+    $project_dir = !empty($options['project-dir']) ? $options['project-dir'] : getcwd();
     // Set up new project directory, fail if directory exists.
-    if ($fs->exists($project_dir)) {
+    if ($project_dir != getcwd() and !$fs->exists($project_dir)) {
+      $fs->mkdir($project_dir);
+    // Fail if we're not in the working directory.
+    } else if ($project_dir != getcwd() and $fs->exists($project_dir)) {
       throw new \RuntimeException("The project directory already exists, you cannot create a new project here");
     }
-    $fs->mkdir($project_dir);
+
+    // Let's stop if we already have a bild.yml file.
+    if ($fs->exists($project_dir . '/bild.yml')) {
+      throw new \RuntimeException("The directory already holds a bild.yml configuration file. Aborting.");
+    }
 
     // Load bild defaults directory.
     $defaults_dir = str_replace('src/Bild/Command', 'defaults', pathinfo(__FILE__, PATHINFO_DIRNAME));
@@ -69,10 +76,10 @@ class DefaultCommand {
    *
    * @command project:setup
    */
-  public function setup($options = ['set-project-dir' => FALSE, 'drupal-version' => '8.4.x', 'no-composer' => FALSE, 'drupal-docroot' => 'docroot']) {
+  public function setup($options = ['project-dir' => '', 'drupal-version' => '8.4.x', 'no-composer' => FALSE, 'drupal-docroot' => 'docroot']) {
     $git = new GitWrapper();
     $fs = new Filesystem();
-    $project_dir = $options['set-project-dir']?$options['set-project-dir']:getcwd();
+    $project_dir = !empty($options['project-dir'])?$options['project-dir']:getcwd();
     // Run composer install.
     if ($options['no-composer']) {
       $process = new Process("composer install");
