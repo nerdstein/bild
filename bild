@@ -39,6 +39,15 @@ $command_classes = $discovery->discover($path, $namespace);
 $input = new \Symfony\Component\Console\Input\ArgvInput($argv);
 $output = new \Symfony\Component\Console\Output\ConsoleOutput();
 $conf = new \Robo\Config();
+
+    //TODO - Explore Symfony Config.
+    //Also consider https://github.com/grasmash/yaml-expander
+    /*$configDirectories = array(__DIR__);
+    $locator = new Config\FileLocator($configDirectories);
+    $symfonyConfig = $locator->locate('bild.yml', NULL, TRUE);
+    $nestedArrayOfConfigData = $symfonyConfig->???
+    $conf->extend($nestedArrayOfConfigData); */
+
 /** @var $container Container */
 $container = \Robo\Robo::createDefaultContainer($input, $output, NULL, $conf);
 $runner = new RoboRunner($command_classes);
