@@ -40,6 +40,15 @@ $input = new \Symfony\Component\Console\Input\ArgvInput($argv);
 $output = new \Symfony\Component\Console\Output\ConsoleOutput();
 $conf = new \Robo\Config();
 
+// Load config from current runtime directory.
+$project_config = getcwd().'/bild.yml';
+if (file_exists($project_config)) {
+  //TODO - Consider config validation.
+  $parser = new \Symfony\Component\Yaml\Parser();
+  $project_config = $parser->parse(file_get_contents($project_config));
+  $conf->import($project_config);
+}
+
     //TODO - Explore Symfony Config.
     //Also consider https://github.com/grasmash/yaml-expander
     /*$configDirectories = array(__DIR__);
@@ -54,11 +63,11 @@ $runner = new RoboRunner($command_classes);
 $runner->setContainer($container);
 
 // Bridge bild config with container.
-$config_hook = new ConfigurationHook();
+//$config_hook = new ConfigurationHook();
 /** @var $factory Consolidation\AnnotatedCommand\AnnotatedCommandFactory */
-$factory = $container->get('commandFactory');
+/*$factory = $container->get('commandFactory');
 $factory->setIncludeAllPublicMethods(FALSE);
-$factory->hookManager()->addInitializeHook($config_hook);
+$factory->hookManager()->addInitializeHook($config_hook);*/
 
 // Run the app.
 $app = new \Symfony\Component\Console\Application('Bild', '1.0.0-alpha0');

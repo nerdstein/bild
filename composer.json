@@ -18,7 +18,7 @@
     "symfony/finder": "~3",
     "symfony/config": "~3",
     "cpliakas/git-wrapper": "~1",
-    "consolidation/robo": "dev-inject-configuration"
+    "consolidation/robo": "1.0.6"
   },
   "autoload": {
     "psr-4": {
